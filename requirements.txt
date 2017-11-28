@@ -1,0 +1,5 @@
+regex >= 2017.11.9
+pyenchant >=1.6.8
+compound-word-splitter >= 0.4
+numpy >= 1.12.0
+nltk >= 3.2.2

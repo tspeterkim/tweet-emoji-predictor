@@ -1,5 +1,8 @@
 import string
+import regex as re
 import numpy as np
+import splitter
+
 from nltk.tokenize import TweetTokenizer
 from collections import Counter
 
@@ -16,9 +19,12 @@ def load_data(path='data/us_trial', max_example=None):
             break
 
         # TODO: extra preprocessing step for each tweet e.g. take care of slang
-        tweet = tweet.strip().lower().translate({ord(c): None for c in '@#'}) # @ user -> user, #omg -> omg
-        tknzr = TweetTokenizer()
-        words = tknzr.tokenize(tweet)
+        tweet = tweet.strip().lower() # delete whitespaces and lowercase
+        tweet = tweet[:-1] if tweet[-1] == u'\u2026' else tweet # and more... -> more (... is a special unicode char)
+        tweet = re.sub(r"#\S+", lambda match: ' '.join(splitter.split(match.group()[1:])), tweet) #artfactory -> art factory
+        tweet = re.sub(r"\b(\S*?)(.)\2{2,}\b", r"\1\2", tweet, (re.MULTILINE | re.DOTALL)) # no wayyyyy -> no way
+        tweet = tweet.translate({ord(c): None for c in '@#'}) # @ user -> user, #omg -> omg
+        words = TweetTokenizer().tokenize(tweet)
         tweet = ' '.join(words)
 
         tweets.append(tweet)
@@ -27,8 +33,9 @@ def load_data(path='data/us_trial', max_example=None):
         num_examples += 1
         if (max_example is not None) and (num_examples >= max_example):
             break
-
+    print("%d examples loaded" % num_examples)
     return tweets, emojis
+
 
 def build_dict(tweets, max_words=50000):
     """
@@ -41,7 +48,7 @@ def build_dict(tweets, max_words=50000):
             wcount[word] += 1
 
     ls = wcount.most_common(max_words)
-    print("#Words: %d -> %d" %  (len(wcount), len(ls)))
+    # print("#Words: %d -> %d" %  (len(wcount), len(ls)))
 
     # leave 0 to UNK
     return {w[0]: index + 1 for (index, w) in enumerate(ls)}
