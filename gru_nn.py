@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-import torch.autograd.variable as variable
+from torch.autograd.variable import Variable
 import torch.optim as optim
 
 class RNN_GRU(nn.Module):
@@ -19,8 +19,8 @@ class RNN_GRU(nn.Module):
 
 batch_size, input_size, hidden_size, output_size = 32, 50, 200, 20
 
-x = variable(torch.randn(batch_size, input_size))
-y = variable(torch.randn(batch_size, output_size), requires_grad=True)
+x = Variable(torch.randn(batch_size, input_size))
+y = Variable(torch.randn(batch_size, output_size), requires_grad=True)
 
 model = RNN_GRU(input_size, hidden_size, output_size)
 
