@@ -74,3 +74,19 @@ def generate_embeddings(word_dict, dim, pretrained_path=None):
         print('Pre-trained: %d (%.2f%%)' %
                         (pre_trained, pre_trained * 100.0 / num_words))
     return embeddings
+
+def generate_labels(emojis, count):
+    '''
+        Generate the matrix for the ground truth label results
+        emojis is a list of correct labnels
+        count is the total number of the classification results like 20 kinds of emojis
+        For each row in the return value, the position k is labeled 1 if the label for this sentence is emoji k
+        Other positions are zero value.
+        This returned value is for calculating the error if I understand the model right.
+        It may be unnecessary.
+    '''
+
+    labels = np.zeros([len(emojis), count])
+    for i in range(len(emojis)):
+        labels[i, emojis[i]] = 1.0
+    return labels
