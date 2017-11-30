@@ -90,3 +90,63 @@ def generate_labels(emojis, count):
     for i in range(len(emojis)):
         labels[i, emojis[i]] = 1.0
     return labels
+
+
+def vectorize(tweets, emojis, word_dict):
+    """
+        Vectorize `examples`.
+        in_x1, in_x2: sequences for document and question respecitvely.
+        in_y: label
+        in_l: whether the entity label occurs in the document.
+    """
+    x = []
+    y = []
+    for i, (tweet, emoji) in enumerate(zip(tweets, emojis)):
+        words = tweet.split(' ')
+        seq = [word_dict[w] if w in word_dict else 0 for w in words]
+        if len(seq) > 0:
+            x.append(seq)
+            onehoty = [0] * 20
+            onehoty[emoji] = 1
+            y.append(onehoty)
+
+        if i % 10000 == 0:
+            print('Vectorize: processed %d / %d' % (i, len(emojis)))
+
+    def len_argsort(seq):
+        return sorted(range(len(seq)), key=lambda x: len(seq[x]))
+
+    sorted_index = len_argsort(x)
+    x = [x[i] for i in sorted_index]
+    y = [y[i] for i in sorted_index]
+
+    return x, y
+
+
+def pad_data(seqs):
+    lengths = [len(seq) for seq in seqs]
+    x = np.zeros((len(seqs), np.max(lengths))).astype('int32')
+    for i, seq in enumerate(seqs):
+        x[i, :lengths[i]] = seq
+    return x
+
+
+def get_mb_idxs(n, mb_size):
+    mbs = []
+    for i in np.arange(0, n, mb_size):
+        mbs.append(np.arange(i, min(i+mb_size, n)))
+    return mbs
+
+
+def generate_batches(x, y, batch_size):
+    """
+        Divy examples into batches of given size
+    """
+    mbs = get_mb_idxs(len(x), batch_size)
+    batches = []
+    for mb in mbs:
+        mb_x = [x[i] for i in mb]
+        mb_y = [y[i] for i in mb]
+        mb_x = pad_data(mb_x)
+        batches.append((mb_x, mb_y))
+    return batches
