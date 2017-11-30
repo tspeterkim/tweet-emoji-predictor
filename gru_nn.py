@@ -17,7 +17,7 @@ class GRU_Classifier(nn.Module):
 
     def forward(self, sentences, batch_size):
         self.hidden = self.init_hidden(self.hidden_size, batch_size)
-        embeds = self.word_embeddings(sentences)
+        embeds = self.word_embeddings(sentences).float()
         x = embeds.view(len(sentences), -1, self.embedding_dim)
         print(x)
         h_gru, self.hidden = self.gru(x, self.hidden)
