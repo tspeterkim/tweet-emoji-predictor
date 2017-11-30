@@ -17,11 +17,11 @@ def main():
     all_train = utils.generate_batches(x,y,batch_size=32)
 
     # set the parameters
-    batch_size, input_size, hidden_size, output_size = 32, 50, 200, 20
+    batch_size, embedding_dim, hidden_size, output_size = 32, 50, 200, 20
     vocabulary_size = len(embeddings)
 
     # initialize the model
-    model = GRU_Classifier(vocabulary_size, input_size, hidden_size, output_size, batch_size)
+    model = GRU_Classifier(vocabulary_size, embedding_dim, hidden_size, output_size)
     model.word_embeddings.weight.data = torch.from_numpy(embeddings)
     loss_function = nn.NLLLoss()
     optimizer = optim.SGD(model.parameters(), lr=1e-4)
@@ -32,9 +32,10 @@ def main():
         np.random.shuffle(all_train)
         for idx, (mb_x, mb_y) in enumerate(all_train):
             print('#Examples = %d, max_seq_len = %d' % (len(mb_x), mb_x.shape[1]))
+            current_bs = len(mb_x)
 
             mb_x = Variable(torch.from_numpy(np.array(mb_x, dtype=np.int64)))
-            y_pred = model(mb_x)
+            y_pred = model(mb_x, current_bs)
             mb_y = Variable(torch.from_numpy(np.array(mb_y, dtype=np.int64)))
             loss = loss_function(y_pred, torch.from_numpy(mb_y))
             print('epoch ', epoch, 'batch ', idx, loss.data[0])
