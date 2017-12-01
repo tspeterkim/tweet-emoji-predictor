@@ -41,6 +41,8 @@ def main():
             # mb_y = Variable(torch.from_numpy(np.array(mb_y, dtype=np.int64)))
             mb_y = Variable(torch.LongTensor(mb_y))
             # batch_size * class_count
+            print(y_pred.size())
+            print(mb_y.size())
             loss = loss_function(y_pred, mb_y)
             print('epoch ', epoch, 'batch ', idx, loss.data[0])
 
