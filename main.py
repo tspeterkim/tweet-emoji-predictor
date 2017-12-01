@@ -7,7 +7,9 @@ import torch
 from torch.autograd import Variable
 
 def main():
-    tweets, emojis = utils.load_data(max_example=100)
+    tweets, emojis = utils.load_data(path='data/us_train', max_example=100)
+    dev_tweets, dev_emojis = utils.load_data(max_example=100)
+
     word_dict = utils.build_dict(tweets)
     # embeddings = utils.generate_embeddings(word_dict, dim=50, pretrained_path='data/glove.twitter.27B.50d.txt')
     embeddings = utils.generate_embeddings(word_dict, dim=50, pretrained_path=None)
@@ -27,30 +29,47 @@ def main():
     loss_function = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=1e-3)
     epoch_num = 500
+    it = 0
+    best_dev_acc = 0
+
+    dev_x, dev_y = utils.vectorize(dev_tweets, dev_emojis, word_dict)
+    all_dev = utils.generate_batches(dev_x, dev_y, batch_size=32)
 
     # model training
     for epoch in range(epoch_num):
         np.random.shuffle(all_train)
         for idx, (mb_x, mb_y) in enumerate(all_train):
             print('#Examples = %d, max_seq_len = %d' % (len(mb_x), mb_x.shape[1]))
-
-            # mb_x = Variable(torch.from_numpy(np.array(mb_x, dtype=np.int64)))
-            print("mb_x: ", np.shape(mb_x))
-            mb_x = Variable(torch.LongTensor(np.array(mb_x, dtype=np.int64).tolist()))
-            y_pred = model(mb_x, len(mb_x))
-            # mb_y = Variable(torch.from_numpy(np.array(mb_y, dtype=np.int64)))
-            mb_y = Variable(torch.LongTensor(mb_y))
-            # batch_size * class_count
-            print(y_pred.size())
-            print(mb_y.size())
+            mb_x = Variable(torch.from_numpy(np.array(mb_x, dtype=np.int64)), requires_grad=False)
+            y_pred, _ = model(mb_x, len(mb_x))
+            mb_y = Variable(torch.from_numpy(np.array(mb_y, dtype=np.int64)), requires_grad=False)
             loss = loss_function(y_pred, mb_y)
-            print('epoch ', epoch, 'batch ', idx, loss.data[0])
+            print('epoch ', epoch, 'batch ', idx, 'loss ', loss.data[0])
 
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
+            it += 1
 
-        print("----")
+            if it % 100 == 0: # every 100 updates, check dev accuracy
+                correct = 0
+                n_examples = 0
+                for idx, (d_x, d_y) in enumerate(all_dev):
+                    n_examples += len(d_x)
+
+                    d_x = Variable(torch.from_numpy(np.array(d_x, dtype=np.int64)), requires_grad=False)
+                    _, y_pred = model(d_x, len(d_x))
+                    y_pred = y_pred.data.numpy()
+                    emoji_pred = np.argmax(y_pred, axis=1)
+
+                    correct += np.sum((emoji_pred == d_y).astype(int))
+
+                dev_acc = correct / n_examples
+                print("Dev Accuracy: %f" % dev_acc)
+                if dev_acc > best_dev_acc:
+                    best_dev_acc = dev_acc
+                    print("Best Dev Accuracy: %f" % best_dev_acc)
+
 
 
 if __name__ == '__main__':
