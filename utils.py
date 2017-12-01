@@ -106,9 +106,10 @@ def vectorize(tweets, emojis, word_dict):
         seq = [word_dict[w] if w in word_dict else 0 for w in words]
         if len(seq) > 0:
             x.append(seq)
-            onehoty = [0] * 20
-            onehoty[emoji] = 1
-            y.append(onehoty)
+            # onehoty = [0] * 20
+            # onehoty[emoji] = 1
+            # y.append(onehoty)
+            y.append(emoji)
 
         if i % 10000 == 0:
             print('Vectorize: processed %d / %d' % (i, len(emojis)))
