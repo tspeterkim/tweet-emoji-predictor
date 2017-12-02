@@ -14,11 +14,11 @@ run_BD_LSTM = False
 run_GRU = True
 
 global_epoch_num = 500
-global_learning_rate = 1e-3
+global_learning_rate = 1e-2
 
 def main():
-    tweets, emojis = utils.load_data(path='data/us_train', max_example=100)
-    dev_tweets, dev_emojis = utils.load_data(max_example=100)
+    tweets, emojis = utils.load_data(path='data/us_train', max_example=400)
+    dev_tweets, dev_emojis = utils.load_data(max_example=400)
 
     word_dict = utils.build_dict(tweets)
     # embeddings = utils.generate_embeddings(word_dict, dim=50, pretrained_path='data/glove.twitter.27B.50d.txt')
@@ -36,13 +36,14 @@ def main():
     all_dev = utils.generate_batches(dev_x, dev_y, batch_size=32)
 
     if run_GRU:
+        print("Running GRU...")
 
         # initialize the model
         model = GRU_Classifier(vocabulary_size, input_size, hidden_size, output_size, batch_size)
         # model.word_embeddings.weight.data = torch.from_numpy(embeddings)
         model.word_embeddings.weight.data = torch.FloatTensor(embeddings.tolist())
         loss_function = nn.CrossEntropyLoss()
-        optimizer = optim.SGD(model.parameters(), lr=1e-3)
+        optimizer = optim.SGD(model.parameters(), lr=global_learning_rate)
         epoch_num = 500
         it = 0
         best_dev_acc = 0
