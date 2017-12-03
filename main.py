@@ -17,12 +17,13 @@ gpu_id = 1
 
 run_LSTM = False
 run_BD_LSTM = False
+run_BD_GRU = True
 run_GRU = True
 
 global_epoch_num = 500
 global_learning_rate = 1e-3
-max_example = None
-max_dev_example = None
+max_example = 50
+max_dev_example = 50
 
 def main():
 
@@ -60,20 +61,21 @@ def main():
     end1 = timer()
     print(end1-end0)
 
-    all_train = utils.generate_batches(x,y,batch_size=50)
-    all_dev = utils.generate_batches(dev_x, dev_y, batch_size=50)
+    batch_size, input_size, hidden_size, output_size, layers = 32, 50, 200, 20, 1
+    all_train = utils.generate_batches(x,y,batch_size=batch_size)
+    all_dev = utils.generate_batches(dev_x, dev_y, batch_size=batch_size)
 
     end2 = timer()
     print(end2-end1)
 
     # set the parameters
-    batch_size, input_size, hidden_size, output_size, layers = 50, 50, 200, 20, 1
+    # batch_size, input_size, hidden_size, output_size, layers = 64, 50, 200, 20, 1
     vocabulary_size = len(embeddings)
 
     if run_GRU:
         print("running GRU...")
         # initialize the model
-        model = GRU_Classifier(vocabulary_size, input_size, hidden_size, output_size, layers)
+        model = GRU_Classifier(vocabulary_size, input_size, hidden_size, output_size, layers, run_BD_GRU)
         model.word_embeddings.weight.data = torch.FloatTensor(embeddings.tolist())
         if torch.cuda.is_available():
             model.cuda(gpu_id)
