@@ -21,13 +21,13 @@ run_GRU = True
 
 global_epoch_num = 500
 global_learning_rate = 1e-3
-max_example = 400
-max_dev_example = 300
+max_example = None
+max_dev_example = None
 
 def main():
 
     start = timer()
-    
+
     if(os.path.isfile("tweets"+str(max_example)+".npy") and os.path.isfile("emojis"+str(max_example)+".npy")):
         tweets = np.load("tweets"+str(max_example)+".npy").tolist()
         emojis = np.load("emojis"+str(max_example)+".npy").tolist()
