@@ -39,6 +39,8 @@ def main():
         print("running GRU...")
         # initialize the model
         model = GRU_Classifier(vocabulary_size, input_size, hidden_size, output_size, layers)
+        if torch.cuda.is_available():
+            model.cuda()
         model.word_embeddings.weight.data = torch.FloatTensor(embeddings.tolist())
         loss_function = nn.CrossEntropyLoss()
         optimizer = optim.Adam(model.parameters(), lr=1e-5)
@@ -62,8 +64,12 @@ def main():
 
                 print('#Examples = %d, max_seq_len = %d' % (len(mb_x), len(mb_x[0])))
                 mb_x = Variable(torch.from_numpy(np.array(mb_x, dtype=np.int64)), requires_grad=False)
+                if torch.cuda.is_available():
+                    mb_x = mb_x.cuda()
                 y_pred = model(mb_x.t(), mb_lengths)
                 mb_y = Variable(torch.from_numpy(np.array(mb_y, dtype=np.int64)), requires_grad=False)
+                if torch.cuda.is_available():
+                    mb_y = mb_y.cuda()
                 loss = loss_function(y_pred, mb_y)
                 print('epoch ', epoch, 'batch ', idx, 'loss ', loss.data[0])
 
@@ -84,6 +90,8 @@ def main():
                         d_lengths = [d_lengths[i] for i in sorted_index]
 
                         d_x = Variable(torch.from_numpy(np.array(d_x, dtype=np.int64)), requires_grad=False)
+                        if torch.cuda.is_available():
+                            d_x = d_x.cuda()
                         # _, y_pred = model(d_x, len(d_x))
                         # y_pred = y_pred.data.numpy()
                         # emoji_pred = np.argmax(y_pred, axis=1)
@@ -91,6 +99,8 @@ def main():
 
                         # use pytorch way to calculate the correct count
                         d_y = Variable(torch.from_numpy(np.array(d_y, dtype=np.int64)), requires_grad=False)
+                        if torch.cuda.is_available():
+                            d_y = d_y.cuda()
                         y_pred = model(d_x.t(), d_lengths)
                         correct += (torch.max(y_pred, 1)[1].view(d_y.size()).data == d_y.data).sum()
 
