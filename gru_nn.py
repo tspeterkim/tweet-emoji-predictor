@@ -27,4 +27,7 @@ class GRU_Classifier(nn.Module):
         return o_linear
 
     def init_hidden(self, batch_size):
-        return Variable(torch.zeros(self.nn_layers, batch_size, self.hidden_size))
+        ih = Variable(torch.zeros(self.nn_layers, batch_size, self.hidden_size))
+        if torch.cuda.is_available():
+            ih = ih.cuda(1)
+        return ih

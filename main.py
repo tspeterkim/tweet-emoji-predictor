@@ -21,8 +21,8 @@ global_learning_rate = 1e-3
 
 
 def main():
-    tweets, emojis = utils.load_data(path='data/us_train', max_example=100)
-    dev_tweets, dev_emojis = utils.load_data(max_example=500)
+    tweets, emojis = utils.load_data(path='data/us_train', max_example=50)
+    dev_tweets, dev_emojis = utils.load_data(max_example=50)
 
     word_dict = utils.build_dict(tweets)
     # embeddings = utils.generate_embeddings(word_dict, dim=50, pretrained_path='data/glove.twitter.27B.50d.txt')
@@ -74,8 +74,7 @@ def main():
                 mb_x = Variable(torch.from_numpy(np.array(mb_x, dtype=np.int64)), requires_grad=False)
                 if torch.cuda.is_available():
                     mb_x = mb_x.cuda(gpu_id)
-                    mb_lengths = mb_lengths.cuda(gpu_id)
-                    mb_lengths = torch.from_numpy(np.array(mb_lengths, dtype=np.int64)).cuda(gpu_id)
+                    #mb_lengths = torch.from_numpy(np.array(mb_lengths, dtype=np.int64)).cuda(gpu_id)
 
                 y_pred = model(mb_x.t(), mb_lengths)
                 mb_y = Variable(torch.from_numpy(np.array(mb_y, dtype=np.int64)), requires_grad=False)
@@ -103,7 +102,7 @@ def main():
                         d_x = Variable(torch.from_numpy(np.array(d_x, dtype=np.int64)), requires_grad=False)
                         if torch.cuda.is_available():
                             d_x = d_x.cuda(gpu_id)
-                            d_lengths = d_lengths.cuda(gpu_id)
+                            #d_lengths = d_lengths.cuda(gpu_id)
 
                         # _, y_pred = model(d_x, len(d_x))
                         # y_pred = y_pred.data.numpy()
