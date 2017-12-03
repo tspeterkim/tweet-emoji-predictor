@@ -22,28 +22,28 @@ run_GRU = True
 
 global_epoch_num = 500
 global_learning_rate = 1e-3
-max_example = 50
-max_dev_example = 50
+max_example = None
+max_dev_example = None
 
 def main():
 
     start = timer()
 
     if(os.path.isfile("data/tweets"+str(max_example)+".npy") and os.path.isfile("data/emojis"+str(max_example)+".npy")):
-        tweets = np.load("tweets"+str(max_example)+".npy").tolist()
-        emojis = np.load("emojis"+str(max_example)+".npy").tolist()
+        tweets = np.load("data/tweets"+str(max_example)+".npy").tolist()
+        emojis = np.load("data/emojis"+str(max_example)+".npy").tolist()
     else:
         tweets, emojis = utils.load_data(path='data/us_train', max_example=max_example)
-        np.save("tweets"+str(max_example)+".npy", np.array(tweets))
-        np.save("emojis"+str(max_example)+".npy", np.array(emojis))
+        np.save("data/tweets"+str(max_example)+".npy", np.array(tweets))
+        np.save("data/emojis"+str(max_example)+".npy", np.array(emojis))
 
     if(os.path.isfile("data/dev_tweets"+str(max_dev_example)+".npy") and os.path.isfile("data/dev_emojis"+str(max_dev_example)+".npy")):
-        dev_tweets = np.load("dev_tweets"+str(max_dev_example)+".npy").tolist()
-        dev_emojis = np.load("dev_emojis"+str(max_dev_example)+".npy").tolist()
+        dev_tweets = np.load("data/dev_tweets"+str(max_dev_example)+".npy").tolist()
+        dev_emojis = np.load("data/dev_emojis"+str(max_dev_example)+".npy").tolist()
     else:
         dev_tweets, dev_emojis = utils.load_data(max_example=max_dev_example)
-        np.save("dev_tweets"+str(max_dev_example)+".npy", np.array(dev_tweets))
-        np.save("dev_emojis"+str(max_dev_example)+".npy", np.array(dev_emojis))
+        np.save("data/dev_tweets"+str(max_dev_example)+".npy", np.array(dev_tweets))
+        np.save("data/dev_emojis"+str(max_dev_example)+".npy", np.array(dev_emojis))
 
     start1 = timer()
     print(start1-start)
