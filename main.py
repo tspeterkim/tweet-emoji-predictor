@@ -28,7 +28,7 @@ def main():
 
     start = timer()
 
-    if(os.path.isfile("tweets"+str(max_example)+".npy") and os.path.isfile("emojis"+str(max_example)+".npy")):
+    if(os.path.isfile("data/tweets"+str(max_example)+".npy") and os.path.isfile("data/emojis"+str(max_example)+".npy")):
         tweets = np.load("tweets"+str(max_example)+".npy").tolist()
         emojis = np.load("emojis"+str(max_example)+".npy").tolist()
     else:
@@ -36,14 +36,14 @@ def main():
         np.save("tweets"+str(max_example)+".npy", np.array(tweets))
         np.save("emojis"+str(max_example)+".npy", np.array(emojis))
 
-    if(os.path.isfile("dev_tweets"+str(max_dev_example)+".npy") and os.path.isfile("dev_emojis"+str(max_dev_example)+".npy")):
+    if(os.path.isfile("data/dev_tweets"+str(max_dev_example)+".npy") and os.path.isfile("data/dev_emojis"+str(max_dev_example)+".npy")):
         dev_tweets = np.load("dev_tweets"+str(max_dev_example)+".npy").tolist()
         dev_emojis = np.load("dev_emojis"+str(max_dev_example)+".npy").tolist()
     else:
         dev_tweets, dev_emojis = utils.load_data(max_example=max_dev_example)
         np.save("dev_tweets"+str(max_dev_example)+".npy", np.array(dev_tweets))
         np.save("dev_emojis"+str(max_dev_example)+".npy", np.array(dev_emojis))
-    
+
     start1 = timer()
     print(start1-start)
 
@@ -56,13 +56,13 @@ def main():
 
     x, y = utils.vectorize(tweets, emojis, word_dict)
     dev_x, dev_y = utils.vectorize(dev_tweets, dev_emojis, word_dict)
-    
+
     end1 = timer()
     print(end1-end0)
 
     all_train = utils.generate_batches(x,y,batch_size=50)
     all_dev = utils.generate_batches(dev_x, dev_y, batch_size=50)
-    
+
     end2 = timer()
     print(end2-end1)
 
