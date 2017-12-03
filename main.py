@@ -74,6 +74,8 @@ def main():
                 mb_x = Variable(torch.from_numpy(np.array(mb_x, dtype=np.int64)), requires_grad=False)
                 if torch.cuda.is_available():
                     mb_x = mb_x.cuda(gpu_id)
+                    mb_lengths = mb_lengths.cuda(gpu_id)
+
                 y_pred = model(mb_x.t(), mb_lengths)
                 mb_y = Variable(torch.from_numpy(np.array(mb_y, dtype=np.int64)), requires_grad=False)
                 if torch.cuda.is_available():
@@ -100,6 +102,8 @@ def main():
                         d_x = Variable(torch.from_numpy(np.array(d_x, dtype=np.int64)), requires_grad=False)
                         if torch.cuda.is_available():
                             d_x = d_x.cuda(gpu_id)
+                            d_lengths = d_lengths.cuda(gpu_id)
+
                         # _, y_pred = model(d_x, len(d_x))
                         # y_pred = y_pred.data.numpy()
                         # emoji_pred = np.argmax(y_pred, axis=1)
