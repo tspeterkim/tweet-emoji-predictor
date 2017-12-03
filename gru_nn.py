@@ -4,28 +4,27 @@ from torch.autograd import Variable
 import numpy as np
 
 class GRU_Classifier(nn.Module):
+    # 1. zero padding use pack_padded to adjust
+    # 2. learning rate and back propagation function selection
+    # 3. use of last state of GRU result
 
-    def __init__(self, vocabulary_size, embedding_dim, hidden_size, output_size, batch_size):
+    def __init__(self, vocabulary_size, embedding_dim, hidden_size, output_size, nn_layers):
         super(GRU_Classifier, self).__init__()
         self.word_embeddings = nn.Embedding(vocabulary_size, embedding_dim)
         self.gru = nn.GRU(input_size=embedding_dim, hidden_size=hidden_size, batch_first=True)
         self.linear = nn.Linear(hidden_size, output_size)
-        self.logsoftmax = nn.LogSoftmax()
-        self.softmax = nn.Softmax()
         self.hidden_size = hidden_size
-        self.embedding_dim = embedding_dim
+        self.nn_layers = nn_layers
         # self.word_embeddings.weight.data.uniform_(-0.1, 0.1)
 
-    def forward(self, sentences, batch_size):
-        self.hidden = self.init_hidden(self.hidden_size, batch_size)
+    def forward(self, sentences, sentences_mask):
+        batch_size = sentences.data.shape[1]
         embeds = self.word_embeddings(sentences).float()
-        # print('embeds: ', embeds.size())
-        # print('hidden: ', self.hidden.size())
-        h_gru, self.hidden = self.gru(embeds, self.hidden)
-        o_linear = self.linear(h_gru[:,-1,:])
-        y_predict_log = self.logsoftmax(o_linear)
-        y_predict = self.softmax(o_linear)
-        return y_predict_log, y_predict
+        packed_embedding = nn.utils.rnn.pack_padded_sequence(embeds, sentences_mask)
+        _, h_gru = self.gru(packed_embedding, self.init_hidden(batch_size))
+        o_linear = self.linear(h_gru[0,:,:])
+        # o_linear = self.linear(h_gru[:,-1,:])
+        return o_linear
 
-    def init_hidden(self, hidden_size, batch_size):
-        return Variable(torch.randn(1, batch_size, hidden_size))
+    def init_hidden(self, batch_size):
+        return Variable(torch.zeros(self.nn_layers, batch_size, self.hidden_size))
