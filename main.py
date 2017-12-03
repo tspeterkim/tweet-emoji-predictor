@@ -9,6 +9,9 @@ import torch.optim as optim
 import torch
 from torch.autograd import Variable
 
+import pdb
+import os.path
+from timeit import default_timer as timer
 
 gpu_id = 1
 
@@ -18,19 +21,59 @@ run_GRU = True
 
 global_epoch_num = 500
 global_learning_rate = 1e-3
-
+max_example = 400
+max_dev_example = 300
 
 def main():
-    tweets, emojis = utils.load_data(path='data/us_train', max_example=50)
-    dev_tweets, dev_emojis = utils.load_data(max_example=50)
+    # print("aaa"+str(max_example)+".a")
+    # pdb.set_trace()
+
+    start = timer()
+    if(os.path.isfile("tweets"+str(max_example)+".npy") and os.path.isfile("emojis"+str(max_example)+".npy")):
+        tweets = np.load("tweets"+str(max_example)+".npy").tolist()
+        emojis = np.load("emojis"+str(max_example)+".npy").tolist()
+    else:
+        tweets, emojis = utils.load_data(path='data/us_train', max_example=max_example)
+        np.save("tweets"+str(max_example)+".npy", np.array(tweets))
+        np.save("emojis"+str(max_example)+".npy", np.array(emojis))
+
+    if(os.path.isfile("dev_tweets"+str(max_dev_example)+".npy") and os.path.isfile("dev_emojis"+str(max_dev_example)+".npy")):
+        dev_tweets = np.load("dev_tweets"+str(max_dev_example)+".npy").tolist()
+        dev_emojis = np.load("dev_emojis"+str(max_dev_example)+".npy").tolist()
+    else:
+        dev_tweets, dev_emojis = utils.load_data(max_example=max_dev_example)
+        np.save("dev_tweets"+str(max_dev_example)+".npy", np.array(dev_tweets))
+        np.save("dev_emojis"+str(max_dev_example)+".npy", np.array(dev_emojis))
+    
+    start1 = timer()
+    print(start1-start)
 
     word_dict = utils.build_dict(tweets)
     # embeddings = utils.generate_embeddings(word_dict, dim=50, pretrained_path='data/glove.twitter.27B.50d.txt')
     embeddings = utils.generate_embeddings(word_dict, dim=50, pretrained_path=None)
 
+    # np.save("embeddings.npy", embeddings)
+    # pdb.set_trace()
+
+    # if(os.path.isfile("embeddings.npy")):
+    #     embeddings = np.load("embeddings.npy")
+    # else:
+    #     print("no embeddings file")
+
+    end0 = timer()
+    print(end0-start1)
+
     x, y = utils.vectorize(tweets, emojis, word_dict)
+    dev_x, dev_y = utils.vectorize(dev_tweets, dev_emojis, word_dict)
+    end1 = timer()
+    print(end1-end0)
 
     all_train = utils.generate_batches(x,y,batch_size=50)
+    all_dev = utils.generate_batches(dev_x, dev_y, batch_size=50)
+    end2 = timer()
+    print(end2-end1)
+
+    # pdb.set_trace()
 
     # set the parameters
     batch_size, input_size, hidden_size, output_size, layers = 50, 50, 200, 20, 1
@@ -54,9 +97,6 @@ def main():
         epoch_num = 500
         it = 0
         best_dev_acc = 0
-
-        dev_x, dev_y = utils.vectorize(dev_tweets, dev_emojis, word_dict)
-        all_dev = utils.generate_batches(dev_x, dev_y, batch_size=50)
 
 
         # model training
