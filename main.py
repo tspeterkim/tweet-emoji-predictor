@@ -10,6 +10,7 @@ import torch
 from torch.autograd import Variable
 
 
+gpu_id = 1
 
 run_LSTM = False
 run_BD_LSTM = False
@@ -39,10 +40,16 @@ def main():
         print("running GRU...")
         # initialize the model
         model = GRU_Classifier(vocabulary_size, input_size, hidden_size, output_size, layers)
-        if torch.cuda.is_available():
-            model.cuda()
         model.word_embeddings.weight.data = torch.FloatTensor(embeddings.tolist())
+        if torch.cuda.is_available():
+            model.cuda(gpu_id)
+            (model.word_embeddings.weight.data).cuda(gpu_id)
+
+
         loss_function = nn.CrossEntropyLoss()
+        if torch.cuda.is_available():
+            loss_function.cuda(gpu_id)
+
         optimizer = optim.Adam(model.parameters(), lr=1e-5)
         epoch_num = 500
         it = 0
@@ -50,6 +57,7 @@ def main():
 
         dev_x, dev_y = utils.vectorize(dev_tweets, dev_emojis, word_dict)
         all_dev = utils.generate_batches(dev_x, dev_y, batch_size=50)
+
 
         # model training
         for epoch in range(epoch_num):
@@ -65,11 +73,11 @@ def main():
                 print('#Examples = %d, max_seq_len = %d' % (len(mb_x), len(mb_x[0])))
                 mb_x = Variable(torch.from_numpy(np.array(mb_x, dtype=np.int64)), requires_grad=False)
                 if torch.cuda.is_available():
-                    mb_x = mb_x.cuda()
+                    mb_x = mb_x.cuda(gpu_id)
                 y_pred = model(mb_x.t(), mb_lengths)
                 mb_y = Variable(torch.from_numpy(np.array(mb_y, dtype=np.int64)), requires_grad=False)
                 if torch.cuda.is_available():
-                    mb_y = mb_y.cuda()
+                    mb_y = mb_y.cuda(gpu_id)
                 loss = loss_function(y_pred, mb_y)
                 print('epoch ', epoch, 'batch ', idx, 'loss ', loss.data[0])
 
@@ -91,7 +99,7 @@ def main():
 
                         d_x = Variable(torch.from_numpy(np.array(d_x, dtype=np.int64)), requires_grad=False)
                         if torch.cuda.is_available():
-                            d_x = d_x.cuda()
+                            d_x = d_x.cuda(gpu_id)
                         # _, y_pred = model(d_x, len(d_x))
                         # y_pred = y_pred.data.numpy()
                         # emoji_pred = np.argmax(y_pred, axis=1)
@@ -100,7 +108,7 @@ def main():
                         # use pytorch way to calculate the correct count
                         d_y = Variable(torch.from_numpy(np.array(d_y, dtype=np.int64)), requires_grad=False)
                         if torch.cuda.is_available():
-                            d_y = d_y.cuda()
+                            d_y = d_y.cuda(gpu_id)
                         y_pred = model(d_x.t(), d_lengths)
                         correct += (torch.max(y_pred, 1)[1].view(d_y.size()).data == d_y.data).sum()
 
