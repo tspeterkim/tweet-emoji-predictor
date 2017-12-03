@@ -129,7 +129,7 @@ def pad_data(seqs):
     x = np.zeros((len(seqs), np.max(lengths))).astype('int32')
     for i, seq in enumerate(seqs):
         x[i, :lengths[i]] = seq
-    return x
+    return x, lengths
 
 
 def get_mb_idxs(n, mb_size):
@@ -142,12 +142,13 @@ def get_mb_idxs(n, mb_size):
 def generate_batches(x, y, batch_size):
     """
         Divy examples into batches of given size
+        Modification: add true length of sequences in the corresponding batches
     """
     mbs = get_mb_idxs(len(x), batch_size)
     batches = []
     for mb in mbs:
         mb_x = [x[i] for i in mb]
         mb_y = [y[i] for i in mb]
-        mb_x = pad_data(mb_x)
-        batches.append((mb_x, mb_y))
+        mb_x, mb_lengths = pad_data(mb_x)
+        batches.append((mb_x, mb_y, mb_lengths))
     return batches
