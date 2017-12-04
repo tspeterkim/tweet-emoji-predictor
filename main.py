@@ -22,13 +22,32 @@ run_GRU = True
 
 global_epoch_num = 500
 global_learning_rate = 1e-3
-max_example = None
+max_example = 100
 max_dev_example = None
+
+#NN parameters
+batch_size = 32
+input_size, \z
+hidden_size, \
+output_size, \
+layers = 32, 50, 200, 20, 1
+
 
 def main():
 
     start = timer()
 
+    if(os.path.isfile("data/embeddings_"+str(max_example)+".npy")):
+        embeddings = np.load("data/embeddings_"+str(max_example)+".npy").tolist()
+    else:
+        embeddings = utils.generate_google_embeddings(N_tweets=max_example)
+        np.save("data/embeddings_"+str(max_example)+".npy", embeddings)
+
+    #for tweet in tvecs:
+#        print(tweet.size)
+#        print(tweet)
+
+    print("Loading remaining data...")
     if(os.path.isfile("data/tweets"+str(max_example)+".npy") and os.path.isfile("data/emojis"+str(max_example)+".npy")):
         tweets = np.load("data/tweets"+str(max_example)+".npy").tolist()
         emojis = np.load("data/emojis"+str(max_example)+".npy").tolist()
@@ -48,20 +67,23 @@ def main():
     start1 = timer()
     print(start1-start)
 
+    print("All data loaded.")
+    print("Building word dict...")
     word_dict = utils.build_dict(tweets)
-    # embeddings = utils.generate_embeddings(word_dict, dim=50, pretrained_path='data/glove.twitter.27B.50d.txt')
-    embeddings = utils.generate_embeddings(word_dict, dim=50, pretrained_path=None)
+     # embeddings = utils.generate_embeddings(word_dict, dim=50, pretrained_path='data/glove.twitter.27B.50d.txt')
+    #embeddings = utils.generate_embeddings(word_dict, dim=50, pretrained_path=None)
 
     end0 = timer()
     print(end0-start1)
 
+    print("Vectorizing..")
     x, y = utils.vectorize(tweets, emojis, word_dict)
     dev_x, dev_y = utils.vectorize(dev_tweets, dev_emojis, word_dict)
 
     end1 = timer()
     print(end1-end0)
 
-    batch_size, input_size, hidden_size, output_size, layers = 32, 50, 200, 20, 1
+    print("Generating batches...")
     all_train = utils.generate_batches(x,y,batch_size=batch_size)
     all_dev = utils.generate_batches(dev_x, dev_y, batch_size=batch_size)
 
@@ -71,6 +93,7 @@ def main():
     # set the parameters
     # batch_size, input_size, hidden_size, output_size, layers = 64, 50, 200, 20, 1
     vocabulary_size = len(embeddings)
+    print("Vocab size: " + str(vocabulary_size))
 
     if run_GRU:
         print("running GRU...")
