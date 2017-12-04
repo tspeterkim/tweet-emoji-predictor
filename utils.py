@@ -6,6 +6,44 @@ import splitter
 from nltk.tokenize import TweetTokenizer
 from collections import Counter
 
+import pandas as pd
+import gensim
+
+def generate_google_embeddings(datapath='data/us_trial', N_tweets=10000):
+    """
+    Use Google's pre-trained word2vec vectors as lookup in order to generate tweet vectors via mean aggregation.
+
+    :param datapath: path to data file to pull tweets from
+    :param N_tweets: number of tweets to pull and create vectors for
+    :return: A numpy array of tweet vector embeddings
+    """
+    print("Generating embeddings from google vecs..")
+
+    # pull the tweets
+    print("Pulling " + str(N_tweets) + " tweets...")
+    with open(datapath + '.text', 'r') as tweet_file:
+        lines = tweet_file.read().split("\n")
+
+    # single column, room for more if this is going to become compact structure
+    print("Tweets pulled. Loading into dataframe...")
+    tweet_df = pd.DataFrame(lines, columns=['Text'])
+    tweet_df['Text'] = tweet_df['Text'].apply(lambda text: text.split())
+
+    dim = 300
+    print("Loading Google vectors...")
+    w2vM = gensim.models.KeyedVectors.load_word2vec_format('GoogleNews-vectors-negative300.bin', binary=True)
+    print("Mean aggregation...")
+    tvecs_train = np.array([np.array([w2vM[t] if t in w2vM
+                                      else np.zeros((dim,))
+                                      for t in twt]).mean(axis=0)
+                            for twt in tweet_df['Text'][:N_tweets]])
+
+    print("Done.")
+    return tvecs_train
+
+
+
+
 def load_data(path='data/us_trial', max_example=None):
     """
         Load data from '{path}.{text, labels}'
