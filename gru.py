@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
+import numpy as np
 
 class GRU_Classifier(nn.Module):
     # 1. zero padding use pack_padded to adjust
@@ -31,5 +32,5 @@ class GRU_Classifier(nn.Module):
     def init_hidden(self, batch_size):
         ih = Variable(torch.zeros(self.nn_layers*(2 if self.bidir else 1), batch_size, self.hidden_size)) # *2 for bidirection
         if torch.cuda.is_available():
-            ih = ih.cuda(1)
+            ih = ih.cuda()
         return ih
