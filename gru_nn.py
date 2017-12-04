@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
-import numpy as np
 
 class GRU_Classifier(nn.Module):
     # 1. zero padding use pack_padded to adjust
