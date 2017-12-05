@@ -173,6 +173,7 @@ def main():
         optimizer = optim.Adam(model.parameters(), lr=1e-4)
         it = 0
         best_dev_acc = 0
+        best_f1 = 0
         epoch_num = 500
 
         # train LSTM
@@ -207,7 +208,10 @@ def main():
                 if it % 100 == 0: # every 100 updates, check dev accuracy
                     correct = 0
                     n_examples = 0
+                    ground_truth = []
+                    predicted = []
                     for idx, (d_x, d_y, d_lengths) in enumerate(all_dev):
+                        ground_truth += d_y
                         n_examples += len(d_x)
 
                         sorted_index = len_value_argsort(d_lengths)
@@ -223,10 +227,16 @@ def main():
                         if torch.cuda.is_available():
                             d_y = d_y.cuda(gpu_id)
                         y_pred = model(d_x.t(), d_lengths)
+                        predicted += list(torch.max(y_pred, 1)[1].view(d_y.size()).data)
                         correct += (torch.max(y_pred, 1)[1].view(d_y.size()).data == d_y.data).sum()
 
                         dev_acc = correct / n_examples
-                        print("Dev Accuracy: %f" % dev_acc)
+                        f1 = f1_score(ground_truth, predicted, average='macro')
+                        print("Dev Accuracy: %f, F1 Score: %f" % (dev_acc, f1))
+                        if f1 > best_f1:
+                            best_f1 = f1
+                            print("Best F1 Score: %f" % best_f1)
+
                         if dev_acc > best_dev_acc:
                             best_dev_acc = dev_acc
                             print("Best Dev Accuracy: %f" % best_dev_acc)
