@@ -1,4 +1,5 @@
 import numpy as np
+from sklearn.metrics import f1_score
 import utils
 
 from gru_nn import GRU_Classifier
@@ -48,8 +49,8 @@ def main():
     print(start1-start)
 
     word_dict = utils.build_dict(tweets)
-    # embeddings = utils.generate_embeddings(word_dict, dim=50, pretrained_path='data/glove.twitter.27B.50d.txt')
-    embeddings = utils.generate_embeddings(word_dict, dim=50, pretrained_path=None)
+    embeddings = utils.generate_embeddings(word_dict, dim=300, pretrained_path='data/glove.6B.300d.txt')
+    # embeddings = utils.generate_embeddings(word_dict, dim=300, pretrained_path=None)
 
     end0 = timer()
     print(end0-start1)
@@ -60,7 +61,7 @@ def main():
     end1 = timer()
     print(end1-end0)
 
-    batch_size, input_size, hidden_size, output_size, layers = 32, 50, 200, 20, 1
+    batch_size, input_size, hidden_size, output_size, layers = 32, 300, 200, 20, 1
     all_train = utils.generate_batches(x,y,batch_size=batch_size)
     all_dev = utils.generate_batches(dev_x, dev_y, batch_size=batch_size)
 
@@ -77,18 +78,19 @@ def main():
         model = GRU_Classifier(vocabulary_size, input_size, hidden_size, output_size, layers, run_BD_GRU)
         model.word_embeddings.weight.data = torch.FloatTensor(embeddings.tolist())
         if torch.cuda.is_available():
-            model.cuda(gpu_id)
-            (model.word_embeddings.weight.data).cuda(gpu_id)
+            model.cuda()
+            (model.word_embeddings.weight.data).cuda()
 
 
         loss_function = nn.CrossEntropyLoss()
         if torch.cuda.is_available():
-            loss_function.cuda(gpu_id)
+            loss_function.cuda()
 
-        optimizer = optim.Adam(model.parameters(), lr=1e-4)
+        optimizer = optim.Adam(model.parameters(), lr=global_learning_rate)
         epoch_num = 500
         it = 0
         best_dev_acc = 0
+        best_f1 = 0
 
 
         # model training
@@ -105,13 +107,12 @@ def main():
                 print('#Examples = %d, max_seq_len = %d' % (len(mb_x), len(mb_x[0])))
                 mb_x = Variable(torch.from_numpy(np.array(mb_x, dtype=np.int64)), requires_grad=False)
                 if torch.cuda.is_available():
-                    mb_x = mb_x.cuda(gpu_id)
-                    #mb_lengths = torch.from_numpy(np.array(mb_lengths, dtype=np.int64)).cuda(gpu_id)
+                    mb_x = mb_x.cuda()
 
                 y_pred = model(mb_x.t(), mb_lengths)
                 mb_y = Variable(torch.from_numpy(np.array(mb_y, dtype=np.int64)), requires_grad=False)
                 if torch.cuda.is_available():
-                    mb_y = mb_y.cuda(gpu_id)
+                    mb_y = mb_y.cuda()
                 loss = loss_function(y_pred, mb_y)
                 # print('epoch ', epoch, 'batch ', idx, 'loss ', loss.data[0])
 
@@ -123,7 +124,10 @@ def main():
                 if it % 100 == 0: # every 100 updates, check dev accuracy
                     correct = 0
                     n_examples = 0
+                    ground_truth = []
+                    predicted = []
                     for idx, (d_x, d_y, d_lengths) in enumerate(all_dev):
+                        ground_truth += d_y
                         n_examples += len(d_x)
 
                         sorted_index = len_value_argsort(d_lengths)
@@ -133,23 +137,23 @@ def main():
 
                         d_x = Variable(torch.from_numpy(np.array(d_x, dtype=np.int64)), requires_grad=False)
                         if torch.cuda.is_available():
-                            d_x = d_x.cuda(gpu_id)
-                            #d_lengths = d_lengths.cuda(gpu_id)
-
-                        # _, y_pred = model(d_x, len(d_x))
-                        # y_pred = y_pred.data.numpy()
-                        # emoji_pred = np.argmax(y_pred, axis=1)
-                        # correct += np.sum((emoji_pred == d_y).astype(int))
+                            d_x = d_x.cuda()
 
                         # use pytorch way to calculate the correct count
                         d_y = Variable(torch.from_numpy(np.array(d_y, dtype=np.int64)), requires_grad=False)
                         if torch.cuda.is_available():
-                            d_y = d_y.cuda(gpu_id)
+                            d_y = d_y.cuda()
                         y_pred = model(d_x.t(), d_lengths)
+                        predicted += list(torch.max(y_pred, 1)[1].view(d_y.size()).data)
                         correct += (torch.max(y_pred, 1)[1].view(d_y.size()).data == d_y.data).sum()
 
                     dev_acc = correct / n_examples
-                    print("Dev Accuracy: %f" % dev_acc)
+                    f1 = f1_score(ground_truth, predicted, average='macro')
+                    print("Dev Accuracy: %f, F1 Score: %f" % (dev_acc, f1))
+                    if f1 > best_f1:
+                        best_f1 = f1
+                        print("Best F1 Score: %f" % best_f1)
+
                     if dev_acc > best_dev_acc:
                         best_dev_acc = dev_acc
                         print("Best Dev Accuracy: %f" % best_dev_acc)
