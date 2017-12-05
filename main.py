@@ -2,23 +2,22 @@ import numpy as np
 import utils
 
 from gru_nn import GRU_Classifier
-from lstm import LSTM, BD_LSTM
+from lstm import LSTM_Classifier
 
 import torch.nn as nn
 import torch.optim as optim
 import torch
 from torch.autograd import Variable
 
-import pdb
 import os.path
 from timeit import default_timer as timer
 
 gpu_id = 1
 
-run_LSTM = False
-run_BD_LSTM = False
-run_BD_GRU = True
-run_GRU = True
+run_LSTM = True
+run_GRU = False
+run_BD_GRU = False
+run_BD_LSTM = True
 
 global_epoch_num = 500
 global_learning_rate = 1e-3
@@ -86,7 +85,7 @@ def main():
         if torch.cuda.is_available():
             loss_function.cuda(gpu_id)
 
-        optimizer = optim.Adam(model.parameters(), lr=1e-5)
+        optimizer = optim.Adam(model.parameters(), lr=1e-4)
         epoch_num = 500
         it = 0
         best_dev_acc = 0
@@ -114,7 +113,7 @@ def main():
                 if torch.cuda.is_available():
                     mb_y = mb_y.cuda(gpu_id)
                 loss = loss_function(y_pred, mb_y)
-                print('epoch ', epoch, 'batch ', idx, 'loss ', loss.data[0])
+                # print('epoch ', epoch, 'batch ', idx, 'loss ', loss.data[0])
 
                 optimizer.zero_grad()
                 loss.backward(retain_graph=True)
@@ -157,54 +156,76 @@ def main():
 
     if run_LSTM:
         print("Running LSTM...")
-        lstm = LSTM(vocabulary_size, input_size, hidden_size, output_size, batch_size)
+        model = LSTM_Classifier(vocabulary_size, input_size, hidden_size, output_size, layers, run_BD_LSTM)
+        model.word_embeddings.weight.data = torch.FloatTensor(embeddings.tolist())
+        if torch.cuda.is_available():
+            model.cuda(gpu_id)
+            (model.word_embeddings.weight.data).cuda(gpu_id)
 
         loss_function = nn.CrossEntropyLoss()
-        optimizer = torch.optim.SGD(lstm.parameters(), lr=global_learning_rate)
+        if torch.cuda.is_available():
+            loss_function.cuda(gpu_id)
+
+        optimizer = optim.Adam(model.parameters(), lr=1e-4)
         it = 0
         best_dev_acc = 0
+        epoch_num = 500
 
-        #train BD LSTM
-        for epoch in range(global_epoch_num):
+        # train LSTM
+        for epoch in range(epoch_num):
             np.random.shuffle(all_train)
 
-            for idx, (mb_x, mb_y) in enumerate(all_train):
-                print('#Examples = %d, max_seq_len = %d' % (len(mb_x), mb_x.shape[1]))
+            for idx, (mb_x, mb_y, mb_lengths) in enumerate(all_train):
+                sorted_index = len_value_argsort(mb_lengths)
+                mb_x = [mb_x[i] for i in sorted_index]
+                mb_y = [mb_y[i] for i in sorted_index]
+                mb_lengths = [mb_lengths[i] for i in sorted_index]
+                print('#Examples = %d, max_seq_len = %d' % (len(mb_x), len(mb_x[0])))
+
                 mb_x = Variable(torch.from_numpy(np.array(mb_x, dtype=np.int64)), requires_grad=False)
+                if torch.cuda.is_available():
+                    mb_x = mb_x.cuda(gpu_id)
 
-                y_pred,_ = lstm(mb_x, len(mb_x))
+                y_pred = model(mb_x.t(), mb_lengths)
                 mb_y = Variable(torch.from_numpy(np.array(mb_y, dtype=np.int64)), requires_grad=False)
-                loss = loss_function(y_pred, mb_y)
-                print('epoch ', epoch, 'batch ', idx, 'loss ', loss.data[0])
+                if torch.cuda.is_available():
+                    mb_y = mb_y.cuda(gpu_id)
 
+                loss = loss_function(y_pred, mb_y)
+                # print('epoch ', epoch, 'batch ', idx, 'loss ', loss.data[0])
 
                 optimizer.zero_grad()
-                loss.backward()
+                loss.backward(retain_graph=True)
                 optimizer.step()
-
+                it += 1
 
 
                 if it % 100 == 0: # every 100 updates, check dev accuracy
                     correct = 0
                     n_examples = 0
-                    for idx, (d_x, d_y) in enumerate(all_dev):
+                    for idx, (d_x, d_y, d_lengths) in enumerate(all_dev):
                         n_examples += len(d_x)
 
+                        sorted_index = len_value_argsort(d_lengths)
+                        d_x = [d_x[i] for i in sorted_index]
+                        d_y = [d_y[i] for i in sorted_index]
+                        d_lengths = [d_lengths[i] for i in sorted_index]
+
                         d_x = Variable(torch.from_numpy(np.array(d_x, dtype=np.int64)), requires_grad=False)
-                        _, y_pred = lstm(d_x, len(d_x))
-                        y_pred = y_pred.data.numpy()
-                        emoji_pred = np.argmax(y_pred, axis=1)
+                        if torch.cuda.is_available():
+                            d_x = d_x.cuda(gpu_id)
 
-                        correct += np.sum((emoji_pred == d_y).astype(int))
+                        d_y = Variable(torch.from_numpy(np.array(d_y, dtype=np.int64)), requires_grad=False)
+                        if torch.cuda.is_available():
+                            d_y = d_y.cuda(gpu_id)
+                        y_pred = model(d_x.t(), d_lengths)
+                        correct += (torch.max(y_pred, 1)[1].view(d_y.size()).data == d_y.data).sum()
 
-                    dev_acc = correct / n_examples
-                    print("Dev Accuracy: %f" % dev_acc)
-                    if dev_acc > best_dev_acc:
-                        best_dev_acc = dev_acc
-                        print("Best Dev Accuracy: %f" % best_dev_acc)
-
-    if run_BD_LSTM:
-        print("Running BD_LSTM")
+                        dev_acc = correct / n_examples
+                        print("Dev Accuracy: %f" % dev_acc)
+                        if dev_acc > best_dev_acc:
+                            best_dev_acc = dev_acc
+                            print("Best Dev Accuracy: %f" % best_dev_acc)
 
 
 def len_value_argsort(seq):

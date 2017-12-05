@@ -26,9 +26,10 @@ class LSTM_Classifier(nn.Module):
         batch_size = sentences.data.shape[1]
         embeds = self.word_embeddings(sentences).float()
         packed_embedding = nn.utils.rnn.pack_padded_sequence(embeds, sentences_mask)
-        _, hn = self.lstm(packed_embedding, self.init_hidden(batch_size))
+        output, hn = self.lstm(packed_embedding, self.init_hidden(batch_size))
         if self.bidir:
-            o_linear = self.linear(hn.view(batch_size,self.hidden_size*2)) # this for bidir
+            hidden = torch.cat((hn[0][0], hn[0][1]), dim=1)
+            o_linear = self.linear(hidden) # this for bidir
         else:
-            o_linear = self.linear(hn[0,:,:]) # normal (no bidir)
+            o_linear = self.linear(hn[0][0]) # normal (no bidir)
         return o_linear
