@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9.6210 64-bit) (preloaded format=pdflatex 2017.3.9)  5 DEC 2017 00:36
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9.6210 64-bit) (preloaded format=pdflatex 2017.3.9)  5 DEC 2017 00:47
 entering extended mode
 **./final_report.tex
 (final_report.tex
@@ -319,11 +319,6 @@ File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
 )
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 64.
-LaTeX Font Info:    Try loading font information for OT1+pcr on input line 64.
-
-("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\ot1pcr.fd"
-File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
-)
 Missing character: There is no ‚ in font ptmr7t!
 Missing character: There is no Ä in font ptmr7t!
 Missing character: There is no ô in font ptmr7t!
@@ -350,6 +345,8 @@ Missing character: There is no ú in font ptmr7t!
 Missing character: There is no ‚ in font ptmr7t!
 Missing character: There is no Ä in font ptmr7t!
 Missing character: There is no ù in font ptmr7t!
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <10.95> on input line 89.
  [1{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}
 
 
@@ -431,11 +428,8 @@ y used, duplicate ignored
                                                   \fi \fi 
 l.129 	\subsection
                   {Bidirectional Long Short Term Memory (Bi-LSTM)} <./gru.png> 
-<./lstm_image.png>]
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <10.95> on input line 145.
- [3pdfTeX warning (ext4): destination with the same identifier (name{figure.4})
- has been already used, duplicate ignored
+<./lstm_image.png>] [3pdfTeX warning (ext4): destination with the same identifi
+er (name{figure.4}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
@@ -530,18 +524,18 @@ Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 201.
  )
 (\end occurred when \iffalse on line 337 was incomplete) 
 Here is how much of TeX's memory you used:
- 6176 strings out of 493333
- 88744 string characters out of 3139186
- 182968 words of memory out of 3000000
- 9627 multiletter control sequences out of 15000+200000
- 17844 words of font info for 45 fonts, out of 3000000 for 9000
+ 6140 strings out of 493333
+ 88237 string characters out of 3139186
+ 186968 words of memory out of 3000000
+ 9596 multiletter control sequences out of 15000+200000
+ 16841 words of font info for 42 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 35i,11n,37p,1139b,316s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 35i,10n,37p,1139b,316s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files/MiKTe
 X 2.9/fonts/enc/dvips/base/8r.enc}<C:/Program Files/MiKTeX 2.9/fonts/type1/urw/
-courier/ucrr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.pf
-b><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb>
-Output written on final_report.pdf (4 pages, 157994 bytes).
+helvetic/uhvb8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.p
+fb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb>
+Output written on final_report.pdf (4 pages, 142399 bytes).
 PDF statistics:
  66 PDF objects out of 1000 (max. 8388607)
  22 named destinations out of 1000 (max. 500000)
