@@ -6,6 +6,7 @@ from nltk.tokenize import TweetTokenizer
 from collections import Counter
 
 import pandas as pd
+import gensim
 
 def generate_google_embeddings(datapath='data/us_trial', N_tweets=10000):
     """
