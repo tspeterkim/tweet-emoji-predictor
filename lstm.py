@@ -18,8 +18,8 @@ class LSTM_Classifier(nn.Module):
         h_0 = Variable(torch.zeros(self.nn_layers * (2 if self.bidir else 1), batch_size, self.hidden_size))  # *2 for bidirection
         c_0 = Variable(torch.zeros(self.nn_layers * (2 if self.bidir else 1), batch_size, self.hidden_size))
         if torch.cuda.is_available():
-            h_0 = h_0.cuda(1)
-            c_0 = c_0.cuda(1)
+            h_0 = h_0.cuda()
+            c_0 = c_0.cuda()
         return h_0, c_0
 
     def forward(self, sentences, sentences_mask):

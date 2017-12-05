@@ -13,17 +13,15 @@ from torch.autograd import Variable
 import os.path
 from timeit import default_timer as timer
 
-gpu_id = 1
-
 run_LSTM = True
 run_GRU = False
 run_BD_GRU = False
-run_BD_LSTM = True
+run_BD_LSTM = False
 
 global_epoch_num = 500
 global_learning_rate = 1e-3
-max_example = None
-max_dev_example = None
+max_example = 50
+max_dev_example = 50
 
 def main():
 
@@ -49,8 +47,8 @@ def main():
     print(start1-start)
 
     word_dict = utils.build_dict(tweets)
-    embeddings = utils.generate_embeddings(word_dict, dim=300, pretrained_path='data/glove.6B.300d.txt')
-    # embeddings = utils.generate_embeddings(word_dict, dim=300, pretrained_path=None)
+    # embeddings = utils.generate_embeddings(word_dict, dim=300, pretrained_path='data/glove.6B.300d.txt')
+    embeddings = utils.generate_embeddings(word_dict, dim=300, pretrained_path=None)
 
     end0 = timer()
     print(end0-start1)
@@ -163,14 +161,14 @@ def main():
         model = LSTM_Classifier(vocabulary_size, input_size, hidden_size, output_size, layers, run_BD_LSTM)
         model.word_embeddings.weight.data = torch.FloatTensor(embeddings.tolist())
         if torch.cuda.is_available():
-            model.cuda(gpu_id)
-            (model.word_embeddings.weight.data).cuda(gpu_id)
+            model.cuda()
+            (model.word_embeddings.weight.data).cuda()
 
         loss_function = nn.CrossEntropyLoss()
         if torch.cuda.is_available():
-            loss_function.cuda(gpu_id)
+            loss_function.cuda()
 
-        optimizer = optim.Adam(model.parameters(), lr=1e-4)
+        optimizer = optim.Adam(model.parameters(), lr=global_learning_rate)
         it = 0
         best_dev_acc = 0
         best_f1 = 0
@@ -189,12 +187,12 @@ def main():
 
                 mb_x = Variable(torch.from_numpy(np.array(mb_x, dtype=np.int64)), requires_grad=False)
                 if torch.cuda.is_available():
-                    mb_x = mb_x.cuda(gpu_id)
+                    mb_x = mb_x.cuda()
 
                 y_pred = model(mb_x.t(), mb_lengths)
                 mb_y = Variable(torch.from_numpy(np.array(mb_y, dtype=np.int64)), requires_grad=False)
                 if torch.cuda.is_available():
-                    mb_y = mb_y.cuda(gpu_id)
+                    mb_y = mb_y.cuda()
 
                 loss = loss_function(y_pred, mb_y)
                 # print('epoch ', epoch, 'batch ', idx, 'loss ', loss.data[0])
@@ -221,25 +219,25 @@ def main():
 
                         d_x = Variable(torch.from_numpy(np.array(d_x, dtype=np.int64)), requires_grad=False)
                         if torch.cuda.is_available():
-                            d_x = d_x.cuda(gpu_id)
+                            d_x = d_x.cuda()
 
                         d_y = Variable(torch.from_numpy(np.array(d_y, dtype=np.int64)), requires_grad=False)
                         if torch.cuda.is_available():
-                            d_y = d_y.cuda(gpu_id)
+                            d_y = d_y.cuda()
                         y_pred = model(d_x.t(), d_lengths)
                         predicted += list(torch.max(y_pred, 1)[1].view(d_y.size()).data)
                         correct += (torch.max(y_pred, 1)[1].view(d_y.size()).data == d_y.data).sum()
 
-                        dev_acc = correct / n_examples
-                        f1 = f1_score(ground_truth, predicted, average='macro')
-                        print("Dev Accuracy: %f, F1 Score: %f" % (dev_acc, f1))
-                        if f1 > best_f1:
-                            best_f1 = f1
-                            print("Best F1 Score: %f" % best_f1)
+                    dev_acc = correct / n_examples
+                    f1 = f1_score(ground_truth, predicted, average='macro')
+                    print("Dev Accuracy: %f, F1 Score: %f" % (dev_acc, f1))
+                    if f1 > best_f1:
+                        best_f1 = f1
+                        print("Best F1 Score: %f" % best_f1)
 
-                        if dev_acc > best_dev_acc:
-                            best_dev_acc = dev_acc
-                            print("Best Dev Accuracy: %f" % best_dev_acc)
+                    if dev_acc > best_dev_acc:
+                        best_dev_acc = dev_acc
+                        print("Best Dev Accuracy: %f" % best_dev_acc)
 
 
 def len_value_argsort(seq):
