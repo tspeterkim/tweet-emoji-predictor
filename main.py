@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.metrics import f1_score
 import utils
 
-from gru_nn import GRU_Classifier
+from gru import GRU_Classifier
 from lstm import LSTM_Classifier
 
 import torch.nn as nn
