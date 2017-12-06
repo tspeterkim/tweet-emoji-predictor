@@ -22,11 +22,13 @@ class GRU_Classifier(nn.Module):
         batch_size = sentences.data.shape[1]
         embeds = self.word_embeddings(sentences).float()
         packed_embedding = nn.utils.rnn.pack_padded_sequence(embeds, sentences_mask)
-        _, h_gru = self.gru(packed_embedding, self.init_hidden(batch_size))
+        _, hn = self.gru(packed_embedding, self.init_hidden(batch_size))
         if self.bidir:
-            o_linear = self.linear(h_gru.view(batch_size,self.hidden_size*2)) # this for bidir
+            hidden = torch.cat((hn[0], hn[1]), dim=1)
+            o_linear = self.linear(hidden) # this for bidir
+            # o_linear = self.linear(h_gru.view(batch_size, self.hidden_size * 2))
         else:
-            o_linear = self.linear(h_gru[0,:,:]) # normal (no bidir)
+            o_linear = self.linear(hn[0,:,:]) # normal (no bidir)
         return o_linear
 
     def init_hidden(self, batch_size):
