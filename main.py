@@ -151,6 +151,11 @@ def main():
                     if f1 > best_f1:
                         best_f1 = f1
                         print("Best F1 Score: %f" % best_f1)
+                        gru_output = open('./out/gru_best', 'w')
+                        gru_output.write(str(ground_truth) + '\n')
+                        gru_output.write(str(predicted) + '\n')
+                        gru_output.write(str(best_f1) + ' ' + str(dev_acc))
+                        gru_output.close()
 
                     if dev_acc > best_dev_acc:
                         best_dev_acc = dev_acc
@@ -234,6 +239,11 @@ def main():
                     if f1 > best_f1:
                         best_f1 = f1
                         print("Best F1 Score: %f" % best_f1)
+                        lstm_output = open('./out/lstm_best', 'w')
+                        lstm_output.write(str(ground_truth) + '\n')
+                        lstm_output.write(str(predicted) + '\n')
+                        lstm_output.write(str(best_f1) + ' ' + str(dev_acc))
+                        lstm_output.close()
 
                     if dev_acc > best_dev_acc:
                         best_dev_acc = dev_acc
@@ -242,6 +252,7 @@ def main():
 
 def len_value_argsort(seq):
     return sorted(range(len(seq)), key=lambda x: seq[x], reverse=True)
+
 
 
 if __name__ == '__main__':
