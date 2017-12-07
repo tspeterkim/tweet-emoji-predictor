@@ -20,8 +20,8 @@ run_BD_LSTM = False
 
 global_epoch_num = 500
 global_learning_rate = 1e-3
-max_example = 50
-max_dev_example = 50
+max_example = None
+max_dev_example = None
 
 def main():
 
@@ -31,7 +31,7 @@ def main():
         tweets = np.load("data/tweets"+str(max_example)+".npy").tolist()
         emojis = np.load("data/emojis"+str(max_example)+".npy").tolist()
     else:
-        tweets, emojis = utils.load_data(path='data/us_train', max_example=max_example)
+        tweets, emojis = utils.load_data(path='data/final_train', max_example=max_example)
         np.save("data/tweets"+str(max_example)+".npy", np.array(tweets))
         np.save("data/emojis"+str(max_example)+".npy", np.array(emojis))
 
