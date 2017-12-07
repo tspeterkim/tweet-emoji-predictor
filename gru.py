@@ -8,11 +8,11 @@ class GRU_Classifier(nn.Module):
     # 2. learning rate and back propagation function selection
     # 3. use of last state of GRU result
 
-    def __init__(self, vocabulary_size, embedding_dim, hidden_size, output_size, nn_layers, bidir=False):
+    def __init__(self, vocabulary_size, embedding_dim, hidden_size, output_size, nn_layers, bidir=False, dropout=0.1):
         super(GRU_Classifier, self).__init__()
         self.word_embeddings = nn.Embedding(vocabulary_size, embedding_dim)
         self.bidir = bidir
-        self.gru = nn.GRU(input_size=embedding_dim, hidden_size=hidden_size, batch_first=True, bidirectional=self.bidir)
+        self.gru = nn.GRU(input_size=embedding_dim, hidden_size=hidden_size, batch_first=True, bidirectional=self.bidir, dropout=dropout)
         self.linear = nn.Linear(hidden_size*(2 if self.bidir else 1), output_size)
         self.hidden_size = hidden_size
         self.nn_layers = nn_layers

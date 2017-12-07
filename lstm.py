@@ -3,7 +3,7 @@ import torch
 from torch.autograd import Variable
 
 class LSTM_Classifier(nn.Module):
-    def __init__(self, vocabulary_size, embedding_dim, hidden_size, output_size, nn_layers, bidir=False):
+    def __init__(self, vocabulary_size, embedding_dim, hidden_size, output_size, nn_layers, bidir=False, dropout=0.1):
         super(LSTM_Classifier, self).__init__()
 
         self.hidden_size = hidden_size
@@ -11,7 +11,7 @@ class LSTM_Classifier(nn.Module):
         self.bidir = bidir
 
         self.word_embeddings = nn.Embedding(vocabulary_size, embedding_dim)
-        self.lstm = nn.LSTM(input_size=embedding_dim, hidden_size=hidden_size, batch_first=True, bidirectional=self.bidir)
+        self.lstm = nn.LSTM(input_size=embedding_dim, hidden_size=hidden_size, batch_first=True, bidirectional=self.bidir, dropout=dropout)
         self.linear = nn.Linear(hidden_size*(2 if self.bidir else 1), output_size)
 
     def init_hidden(self, batch_size):
