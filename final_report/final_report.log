@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9.6210 64-bit) (preloaded format=pdflatex 2017.3.9)  8 DEC 2017 23:35
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9.6210 64-bit) (preloaded format=pdflatex 2017.3.9)  8 DEC 2017 23:40
 entering extended mode
 **./final_report.tex
 (final_report.tex
@@ -414,12 +414,7 @@ File: modelgru.png Graphic file (type png)
 <use modelgru.png>
 Package pdftex.def Info: modelgru.png used on input line 112.
 (pdftex.def)             Requested size: 250.13278pt x 263.48257pt.
-
-Overfull \hbox (31.04666pt too wide) in paragraph at lines 112--113
- [][] 
- []
-
-[2]
+ [2]
 Underfull \hbox (badness 1087) in paragraph at lines 118--119
 \OT1/ptm/m/n/10.95 A re-cur-rent neu-ral net-work (RNN) is a class
  []
@@ -590,7 +585,7 @@ Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 252.
 Here is how much of TeX's memory you used:
  6254 strings out of 493333
  90317 string characters out of 3139186
- 185610 words of memory out of 3000000
+ 185597 words of memory out of 3000000
  9674 multiletter control sequences out of 15000+200000
  21628 words of font info for 51 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -600,7 +595,7 @@ X 2.9/fonts/enc/dvips/base/8r.enc}<C:/Program Files/MiKTeX 2.9/fonts/type1/urw/
 courier/ucrr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.pf
 b><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb><C:/Program Fil
 es/MiKTeX 2.9/fonts/type1/urw/times/utmri8a.pfb>
-Output written on final_report.pdf (6 pages, 1390761 bytes).
+Output written on final_report.pdf (6 pages, 1390743 bytes).
 PDF statistics:
  111 PDF objects out of 1000 (max. 8388607)
  43 named destinations out of 1000 (max. 500000)
