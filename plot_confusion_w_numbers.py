@@ -42,7 +42,7 @@ def plot_confusion_matrix(cm, classes,
 ground_truth = []
 pred_labels = []
 
-with open('english.output.txt', 'r') as predictions, open('data/us_trial.labels', 'r') as gnd_truth:
+with open('english.output2.txt', 'r') as predictions, open('data/us_trial.labels', 'r') as gnd_truth:
     for p in predictions:
         pred_labels.append(p[:-1])
         
