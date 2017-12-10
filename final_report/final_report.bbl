@@ -1,0 +1,68 @@
+\begin{thebibliography}{}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+
+\bibitem[{Barbieri et~al.(2017)Barbieri, Ballesteros, and
+  Saggion}]{barbieri2017emojis}
+Francesco Barbieri, Miguel Ballesteros, and Horacio Saggion. 2017.
+\newblock Are emojis predictable?
+\newblock {\em arXiv preprint arXiv:1702.07285\/} .
+
+\bibitem[{Barbieri et~al.(2016{\natexlab{a}})Barbieri, Kruszewski, Ronzano, and
+  Saggion}]{barbieri2016cosmopolitan}
+Francesco Barbieri, German Kruszewski, Francesco Ronzano, and Horacio Saggion.
+  2016{\natexlab{a}}.
+\newblock How cosmopolitan are emojis?: Exploring emojis usage and meaning over
+  different languages with distributional semantics.
+\newblock In {\em Proceedings of the 2016 ACM on Multimedia Conference\/}. ACM,
+  pages 531--535.
+
+\bibitem[{Barbieri et~al.(2016{\natexlab{b}})Barbieri, Ronzano, and
+  Saggion}]{barbieri2016does}
+Francesco Barbieri, Francesco Ronzano, and Horacio Saggion. 2016{\natexlab{b}}.
+\newblock What does this emoji mean? a vector space skip-gram model for twitter
+  emojis.
+\newblock In {\em LREC\/}.
+
+\bibitem[{Chung et~al.(2014)Chung, Gulcehre, Cho, and
+  Bengio}]{chung2014empirical}
+Junyoung Chung, Caglar Gulcehre, KyungHyun Cho, and Yoshua Bengio. 2014.
+\newblock Empirical evaluation of gated recurrent neural networks on sequence
+  modeling.
+\newblock {\em arXiv preprint arXiv:1412.3555\/} .
+
+\bibitem[{Eisner et~al.(2016)Eisner, Rockt{\"a}schel, Augenstein,
+  Bo{\v{s}}njak, and Riedel}]{eisner2016emoji2vec}
+Ben Eisner, Tim Rockt{\"a}schel, Isabelle Augenstein, Matko Bo{\v{s}}njak, and
+  Sebastian Riedel. 2016.
+\newblock emoji2vec: Learning emoji representations from their description.
+\newblock {\em arXiv preprint arXiv:1609.08359\/} .
+
+\bibitem[{Espinosa-Anke et~al.(2016)Espinosa-Anke, Saggion, and
+  Barbieri}]{espinosa2016revealing}
+Luis Espinosa-Anke, Horacio Saggion, and Francesco Barbieri. 2016.
+\newblock Revealing patterns of twitter emoji usage in barcelona and madrid.
+\newblock {\em Frontiers in Artificial Intelligence and Applications.
+  2016;(Artificial Intelligence Research and Development) 288: 239-44.\/} .
+
+\bibitem[{Hallsmar and Palm(2016)}]{hallsmar2016multi}
+Fredrik Hallsmar and Jonas Palm. 2016.
+\newblock Multi-class sentiment classification on twitter using an emoji
+  training heuristic.
+
+\bibitem[{Pennington et~al.(2014)Pennington, Socher, and
+  Manning}]{pennington2014glove}
+Jeffrey Pennington, Richard Socher, and Christopher Manning. 2014.
+\newblock Glove: Global vectors for word representation.
+\newblock In {\em Proceedings of the 2014 conference on empirical methods in
+  natural language processing (EMNLP)\/}. pages 1532--1543.
+
+\bibitem[{Sampietro(2016)}]{sampietro2016exploring}
+Agnese Sampietro. 2016.
+\newblock Exploring the punctuating effect of emoji in spanish whatsapp chats.
+\newblock {\em Lenguas Modernas\/} (47).
+
+\bibitem[{Zhao and Zeng()}]{zhaousing}
+Luda Zhao and Connie Zeng. ????
+\newblock Using neural networks to predict emoji usage from twitter data .
+
+\end{thebibliography}

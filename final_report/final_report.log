@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9.6210 64-bit) (preloaded format=pdflatex 2017.3.9)  9 DEC 2017 20:42
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9.6210 64-bit) (preloaded format=pdflatex 2017.3.9)  9 DEC 2017 20:52
 entering extended mode
 **./final_report.tex
 (final_report.tex
@@ -471,6 +471,11 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
                                                   \fi \fi 
 l.154 	\subsection
                   {Bidirectional Long Short Term Memory (Bi-LSTM)} <./gru.png>]
+
+Underfull \hbox (badness 2150) in paragraph at lines 164--165
+\OT1/ptm/m/n/10.95 bined pre-vi-ously sourced data with our own
+ []
+
 <leaderboard.png, id=42, 1298.8525pt x 536.0025pt>
 File: leaderboard.png Graphic file (type png)
  <use leaderboard.png>
@@ -513,59 +518,43 @@ Overfull \hbox (35.66902pt too wide) in paragraph at lines 222--223
  [][] 
  []
 
+[5pdfTeX warning (ext4): destination with the same identifier (name{table.2}) h
+as been already used, duplicate ignored
 
-Underfull \vbox (badness 1496) has occurred while \output is active []
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.228 
+      pdfTeX warning (ext4): destination with the same identifier (name{figure.
+6}) has been already used, duplicate ignored
 
-
-<gru_confusion.png, id=58, 899.36pt x 806.01125pt>
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.228 
+       <./ffnn_confusion.png>]
+<gru_confusion.png, id=66, 899.36pt x 806.01125pt>
 File: gru_confusion.png Graphic file (type png)
  <use gru_confusion.png>
 Package pdftex.def Info: gru_confusion.png used on input line 232.
 (pdftex.def)             Requested size: 233.82808pt x 209.55798pt.
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [5pdfTeX warning (ext4): destination with the same identifier (name{table.2}) 
-has been already used, duplicate ignored
-
-\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
-                                                  \fi \fi 
-l.235 		T
-         he Bi-GRU confusion matrix looks very similar to that of the GRU. I...
-pdfTeX warning (ext4): destination with the same identifier (name{figure.6}) ha
-s been already used, duplicate ignored
-
-\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
-                                                  \fi \fi 
-l.235 		T
-         he Bi-GRU confusion matrix looks very similar to that of the GRU. I...
- <./ffnn_confusion.png>]
 <bgru_confusion.png, id=67, 994.71625pt x 862.22125pt>
 File: bgru_confusion.png Graphic file (type png)
 
 <use bgru_confusion.png>
 Package pdftex.def Info: bgru_confusion.png used on input line 239.
 (pdftex.def)             Requested size: 238.73677pt x 206.93732pt.
-Missing character: There is no â in font ptmr7t!
-Missing character: There is no € in font ptmr7t!
-Missing character: There is no ™ in font ptmr7t!
-
-Underfull \hbox (badness 1048) in paragraph at lines 247--248
-\OT1/ptm/m/n/10.95 mean ag-gre-ga-tion method and GloVe method.
- []
-
-(final_report.bbl [6pdfTeX warning (ext4): destination with the same identifier
- (name{figure.7}) has been already used, duplicate ignored
+ (final_report.bbl [6pdfTeX warning (ext4): destination with the same identifie
+r (name{figure.7}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.25 
+l.18 
      pdfTeX warning (ext4): destination with the same identifier (name{figure.8
 }) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.25 
+l.18 
       <./gru_confusion.png> <./bgru_confusion.png>]
 Underfull \hbox (badness 5787) in paragraph at lines 35--39
 \OT1/ptm/m/n/10 Matko Bo[]snjak, and Se-bas-tian Riedel. 2016.
@@ -596,14 +585,14 @@ Here is how much of TeX's memory you used:
  9679 multiletter control sequences out of 15000+200000
  21628 words of font info for 51 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 35i,11n,37p,1113b,431s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 35i,11n,37p,1151b,429s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files/MiKTe
 X 2.9/fonts/enc/dvips/base/8r.enc}<C:/Program Files/MiKTeX 2.9/fonts/type1/publ
 ic/amsfonts/cm/cmmi10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/courier/
 ucrr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.pfb><C:/Pr
 ogram Files/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb><C:/Program Files/MiKTe
 X 2.9/fonts/type1/urw/times/utmri8a.pfb>
-Output written on final_report.pdf (7 pages, 1520976 bytes).
+Output written on final_report.pdf (7 pages, 1520996 bytes).
 PDF statistics:
  125 PDF objects out of 1000 (max. 8388607)
  46 named destinations out of 1000 (max. 500000)
