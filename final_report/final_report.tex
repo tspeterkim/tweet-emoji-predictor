@@ -161,7 +161,7 @@ For evaluation, we used accuracy as well as the F1 score, which is a harmonic me
 
 
 \par
-To generate a large training dataset, we used Tweepy to crawl about 480,000 tweets with exactly one emoji among the top 20 emojis in English tweets. After training our models on this body of tweets, we tested on the trial dataset provided by the competition hosts, which contains 50,000 tweets. We build a vocabulary based on the training dataset and use <UNK> for unknown words at test time. We choose word embedding size d = 300, and use the 300 dimensional pre-trained GloVe word embeddings from Stanford. The dimension of the hidden layer is 200 and the output size is 20 according to 20 labels we need to predict from. Optimization is carried out using Adam. In addition, we use a mini-batch size of 32, set the learning rate at 1e-3 and train the model for 500 epochs.
+To generate a large training dataset, we used Tweepy to crawl about 480,000 tweets with exactly one emoji among the top 20 emojis in English tweets. After training our models on this body of tweets, we tested on the trial dataset provided by the competition hosts, which contains 50,000 tweets. We build a vocabulary based on the training dataset and use $<$UNK$>$ for unknown words at test time. We choose word embedding size d = 300, and use the 300 dimensional pre-trained GloVe word embeddings from Stanford. The dimension of the hidden layer is 200 and the output size is 20 according to 20 labels we need to predict from. Optimization is carried out using Adam. In addition, we use a mini-batch size of 32, set the learning rate at 1e-3 and train the model for 500 epochs.
 
 
 \subsection{Comparison of Model Accuracy and F1}
